@@ -44,6 +44,8 @@ public class GetContents{
           }
 
       }*/
+      DecisionTree dt = new DecisionTree();
+      dt.decisionTreeLearner(examples, attributes, null);
     }catch(Exception r){
       System.out.println(r);
     }

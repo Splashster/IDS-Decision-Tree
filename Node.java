@@ -11,7 +11,7 @@ public class Node {
         parent = null;
     }
 
-    public Node(String name ) { //constructor
+    public Node(String name) { //constructor
         this.name = name;
         child = new ArrayList<>();
     }
@@ -69,7 +69,7 @@ public class Node {
         }
         return result;
     }
-    public static void main(String [] args)
+    /*public static void main(String [] args)
     {
         Node root = new Node("Patrons");
         Node child1 = new Node("Full");
@@ -87,7 +87,7 @@ public class Node {
 
 
         System.out.println(root);
-        /*System.out.println(root.getChildren());
+        System.out.println(root.getChildren());
         System.out.println(child3.getChildren());
         System.out.println(child2.getChildren());
         System.out.println(root.getParent());
@@ -99,8 +99,8 @@ public class Node {
         System.out.println(child4.getValue());
         System.out.println(child3.getValue());
         System.out.println(child4.getParentName());
-        System.out.println(child3.getParentName());*/
+        System.out.println(child3.getParentName());
         child3.removeChild();
         System.out.println(root);
-    }
+    }*/
 }

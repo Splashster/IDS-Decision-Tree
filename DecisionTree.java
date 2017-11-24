@@ -1,33 +1,65 @@
-import java.util.Arraylist;
-import java.util.Random;
+import java.util.*;
 
 public class DecisionTree{
   String lastkey = "";
 
-  public TreeNode decisionTreeLearner(List<Example> examples, Map<String, String[]> attributes, List<Example> parent_examples){
+  public Node decisionTreeLearner(List<Example> examples, Map<String, String[]> attributes, List<Example> parent_examples){
       for(String key : attributes.keySet()){
           lastkey = key;
       }
 
-      if(examples.isEmpty()){return plularityValue(parent_examples);}
-      else if(allTheSame(examples)){return examples.get(0).getAttributeValue(lastkey);}
-      else if(attributes.isEmpty()){return plularityValue(examples);}
-      else{
+      /*if(examples.isEmpty()){
+        return plularityValue(parent_examples);
+      }*/
+      //else if(allTheSame(examples)){return examples.get(0).getAttributeValue(lastkey);}
+      //else if(attributes.isEmpty()){return plularityValue(examples);}
+      //else{
         String a;
         int argmax = 0;
         int temp = 0;
 
-        for(List attribute : attributes){
+      /* for(List attribute : attributes){
           for(String val : attribute){
             temp = importance(attribute, examples)
             if(temp > argmax){
               a = attribute;
             }
           }
+        }*/
+
+        Node tree = new Node(lastkey);
+        System.out.println(tree.isRoot());
+        System.out.println(tree.getValue());
+
+        return tree;
+      }
+
+
+ public int posCount(List<Example> examples){
+   int pos_count = 0;
+
+     for (Example ex: examples){
+         if(ex.getAttributeValue(lastkey).equalsIgnoreCase("Yes")){
+           pos_count++;
+         }
+     }
+     return pos_count;
+ }
+
+ public int[] valueOccurence(String attribute, String value, List<Example> examples){
+    int[] valueOccurences = {0,0};
+
+    for(Example ex : examples){
+      if(ex.getAttributeValue(attribute).equalsIgnoreCase(value)){
+          valueOccurences[0]++;
+        if(ex.getAttributeValue(lastkey).equalsIgnoreCase("Yes")){
+          valueOccurences[1]++;
         }
       }
-  }
+    }
 
+    return valueOccurences;
+  }
 
   public String plularityValue(List<Example> parent_examples){
     int pos_count = 0;
@@ -47,7 +79,7 @@ public class DecisionTree{
     if(pos_count > neg_count){
       classification = "Yes";
     }else if(pos_count == neg_count){
-      classification = choices[ran.nextInt(choices.length)];
+      classification = choices[rand.nextInt(choices.length)];
     }
 
     return classification;
@@ -59,7 +91,7 @@ public class DecisionTree{
 
     for (Example ex: examples){
       if(!ex.getAttributeValue(lastkey).equalsIgnoreCase(testcase)){
-        boolean = false;
+        answer = false;
         break;
       }
     }
