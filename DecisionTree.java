@@ -4,14 +4,14 @@ import java.lang.Math.*;
 public class DecisionTree{
   String lastkey = "";
 
+  public DecisionTree(String lkey){
+     lastkey = lkey;
+  }
+
+
   public Node decisionTreeLearner(List<Example> examples, Map<String, String[]> attributes, List<Example> parent_examples){
       Node tree;
       String common_output = "";
-
-      for(String key : attributes.keySet()){
-          lastkey = key;
-      }
-
 
       if(examples.isEmpty()){
         common_output = plularityValue(parent_examples);
@@ -26,10 +26,11 @@ public class DecisionTree{
         return tree;
       }else{
         String a = "";
-        double argmax = -1.0;
+        double argmax = 0.0;
         double temp = 0.0;
         int count = 0;
         List<Example> exs = new ArrayList<Example>();
+        List<String> removal = new ArrayList<String>();
         Node subtree;
         Node branch;
 
@@ -37,49 +38,64 @@ public class DecisionTree{
             if(count == attributes.size()-1){
               break;
             }else{
-            //  System.out.println("Key" + attribute.getKey());
+              //System.out.println("Importance coming Key: " + attribute.getKey());
               temp = importance(attribute.getKey(), attribute.getValue(), examples);
-            //  System.out.println(attribute.getKey());
-              if(temp > argmax){
+            //
+             if(temp <= 0.0){
+               removal.add(attribute.getKey());
+             }else if(temp > argmax){
                 argmax = temp;
                 a = attribute.getKey();
               }
               count++;
             }
-            for(String value : attribute.getValue()){
+            //for(String value : attribute.getValue()){
               //  System.out.println("Attribute: " + a + "Value: " + value);
-            }
+            //}
 
         }
 
-        //System.out.println("Best A: " + a);
+        System.out.println("Best Attribute: " + a);
       //  try{
           tree = new Node(a);
-        //}catch(Exception e){}
+      //  }catch(Exception e){}
 
-
-        for(String value: attributes.get(a)){
-          //System.out.println("Inside Attribute: " + a + "Value: " + value);
-           for(Example e : examples){
-             if(e.getAttributeValue(a).equalsIgnoreCase(value)){
-              // System.out.println("Added example for Attribute: " + a + " Value: " + value);
-               exs.add(e);
+        if(!a.equals("")){
+          for(String value: attributes.get(a)){
+          //  System.out.println("Inside Attribute: " + a + " Value: " + value + " Current example size: " + examples.size());
+             for(Example e : examples){
+               if(e.getAttributeValue(a).equalsIgnoreCase(value)){
+            //     System.out.println("Added example for Attribute: " + a + " Value: " + value);
+                 exs.add(e);
+               }
              }
-           }
-           if((attributes.size()-1) == 1){
-             attributes.remove(lastkey);
-             attributes.remove(a);
-           }else{
-             attributes.remove(a);
-           }
+            // System.out.println("New example size: " + exs.size());
+             //System.out.println("Attributes size: " + attributes.size());
+            // System.out.println("Attributes left " + attributes.keySet());
+             if(removal.size() >= 1) {
+               for(String atr: removal){
+                 //System.out.println("Removed : " + atr);
+                 attributes.remove(atr);
 
-           //System.out.println("Current attributes list" + attributes.keySet());
-           subtree = decisionTreeLearner(exs, attributes, examples);
-           branch = new Node(value);
-           branch.setParent(tree);
-           subtree.setParent(branch);
-           //System.out.println("Current Tree: " + tree);
+               }
+               //System.out.println("Removed : " + a);
+               attributes.remove(a);
+               removal.clear();
+             }else{
+               attributes.remove(a);
+               //System.out.println("Removed : " + a);
+             }
+
+             //System.out.println("Current attributes list" + attributes.keySet());
+             subtree = decisionTreeLearner(exs, attributes, examples);
+             branch = new Node(value);
+             tree.addChild(branch);
+             branch.addChild(subtree);
+             exs.clear();
+             //System.out.println("Current Tree: " + tree);
+          }
         }
+
     }
     return tree;
   }
@@ -170,9 +186,10 @@ public class DecisionTree{
 
         temp = ((double)totalValOccurence/totalNumExamples)*(((-(double)posValOccurence/totalValOccurence)*(Math.log((double)posValOccurence/totalValOccurence)/(Math.log(2)))) -
                (((double)negValOccurence/totalValOccurence)*(Math.log((double)negValOccurence/totalValOccurence)/(Math.log(2)))));
+               //System.out.println("Attribute: " + attribute +  " Attribute pos occurence: " + totalValOccurence + " Value: " + value +  " Number pos occurence: " + posValOccurence +  " Number neg occurence: " + negValOccurence);
         if(!Double.isNaN(temp)){
           remaining_entropy += temp;
-          System.out.println("Attribute: " + attribute +  " Attribute pos occurence: " + totalValOccurence + " Value: " + value +  " Number pos occurence: " + posValOccurence +  " Number neg occurence: " + negValOccurence);
+
           //System.out.println("Part 1: " + (double)totalValOccurence/totalNumExamples);
           //System.out.println("Part 2: " + ((-(double)posValOccurence/totalValOccurence)*(Math.log((double)posValOccurence/totalValOccurence)/(Math.log(2)))));
           //System.out.println("Part 3: " + (((double)negValOccurence/totalValOccurence))*(Math.log((double)negValOccurence/totalValOccurence)/(Math.log(2))));
@@ -184,7 +201,7 @@ public class DecisionTree{
 
       info_gain = entropy - remaining_entropy;
 
-      System.out.println("Info gained from attribute: " + attribute + " is: " + info_gain);
+      //System.out.println("Etropy is: " + entropy + " Info gained from attribute: " + attribute + " is: " + info_gain);
 
       return info_gain;
   }

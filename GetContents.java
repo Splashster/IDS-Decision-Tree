@@ -25,7 +25,9 @@ public class GetContents{
         //Example example = ;
         examples.add(new Example(attr_names, parts));
       }
-
+      for(String key : attributes.keySet()){
+          lastkey = key;
+      }
       //System.out.println(attributes.keySet().iterator().next());
       /*
       for(String key : attributes.keySet()){
@@ -48,14 +50,15 @@ public class GetContents{
           }
 
       }*/
-      DecisionTree dt = new DecisionTree();
-      System.out.println(dt.decisionTreeLearner(examples, attributes, null));
+      DecisionTree dt = new DecisionTree(lastkey);
+      attributes.remove(lastkey);
+    //  System.out.println(dt.decisionTreeLearner(examples, attributes, null));
       Node tree = dt.decisionTreeLearner(examples, attributes, null);
-      System.out.println(tree.isRoot());
-      System.out.println(tree.getChildren());
+    //  System.out.println(tree.isRoot());
+    //  System.out.println(tree.getChildren());
 
       //for(String t : tree.toString()){
-        System.out.println(tree.getParent());
+        System.out.println(tree);
       //}
     }catch(Exception r){
       System.out.println(r);
