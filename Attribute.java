@@ -7,9 +7,9 @@ public class Attribute{
      value = val;
   }
 
-  public getAttributeValue(String n){
+  /*public String getAttributeValue(String n){
     if(n == name){
       return value;
     }
-  }
+  }*/
 }

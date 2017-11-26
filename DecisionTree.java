@@ -27,7 +27,7 @@ public class DecisionTree{
           }
         }*/
 
-        Node tree = new Node(lastkey);
+        Node tree = new Node(lastkey,null);
         System.out.println(tree.isRoot());
         System.out.println(tree.getValue());
 
@@ -46,17 +46,19 @@ public class DecisionTree{
      return pos_count;
  }
 
- public int[] valueOccurence(String attribute, String value, List<Example> examples){
-    int[] valueOccurences = {0,0};
+ public double valueOccurence(String attribute, String value, List<Example> examples){
+    double valueOccurences = 0.0;
+    double posCount = 0.0, total = 0.0;
 
     for(Example ex : examples){
       if(ex.getAttributeValue(attribute).equalsIgnoreCase(value)){
-          valueOccurences[0]++;
+          posCount++;
         if(ex.getAttributeValue(lastkey).equalsIgnoreCase("Yes")){
-          valueOccurences[1]++;
+          total++;
         }
       }
     }
+    valueOccurences = (posCount/total);
 
     return valueOccurences;
   }
@@ -97,18 +99,37 @@ public class DecisionTree{
     }
     return answer;
   }
+  
+  public double entropy (double p, double q) {
+      return -((q*((Math.log(q))/(Math.log(2))))+(p*((Math.log(p))/(Math.log(2)))));
+  }
 
-/*  public int importance(Attribute attribute, List<Example> examples{
-      int remaining_entropy = 0;
-      int info_gain = 0;
-      int num_examples = examples.size();
-
-      for (Example ex: examples){
+  public double importance(Attribute attributes, List<Example> examples){
+      
+      double pos = posCount(examples);
+      double total = examples.size();
+      double neg = total-pos;
+      
+      double p = (pos/total);
+      double q = (neg/total);
+      double entropy = entropy(p,q);
+      
+      /*for(Map.Entry<String, String[]> entry : attributes.entrySet()){ 
+          for (String item : entry.getValue()){ 
+              System.out.println(entry.getKey());
+              System.out.println(item);
+          }  
+      }*/
+      //valueOccurence()
+      double info_gain = 0.0;
+      
+      /*for (Example ex: examples){
           if(ex.getAttritbuteValue(attribute) ){
             pos_count++;
           }else{
             neg_count++;
           }
-      }
-  }*/
+      }*/
+      return info_gain;
+  }
 }
