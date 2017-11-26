@@ -30,11 +30,15 @@ public class GetContents{
       /*
       for(String key : attributes.keySet()){
           lastkey = key;
+      }
+      for(Map.Entry<String, String[]> entry : attributes.entrySet()){
+          for (String item : entry.getValue()){
+            System.out.println(entry.getKey());
+            System.out.println(item);
+          }
       }*/
-      /*for(Map.Entry<String, String[]> entry : attributes.entrySet()){
-        System.out.println(entry.getKey());
-        System.out.println(entry.getValue()[1]);
-      }*/
+    //  System.out.println(entry.getKey());
+    //  System.out.println(entry.getValue());
       //System.out.println(lkey);
       //System.out.println(examples.get(1).getAttributeValue(lastkey));
       /*for (Map.Entry<String, String[]> entry : attributes.entrySet())
@@ -45,7 +49,14 @@ public class GetContents{
 
       }*/
       DecisionTree dt = new DecisionTree();
-      dt.decisionTreeLearner(examples, attributes, null);
+      System.out.println(dt.decisionTreeLearner(examples, attributes, null));
+      Node tree = dt.decisionTreeLearner(examples, attributes, null);
+      System.out.println(tree.isRoot());
+      System.out.println(tree.getChildren());
+
+      //for(String t : tree.toString()){
+        System.out.println(tree.getParent());
+      //}
     }catch(Exception r){
       System.out.println(r);
     }

@@ -1,43 +1,92 @@
 import java.util.*;
+import java.lang.Math.*;
 
 public class DecisionTree{
   String lastkey = "";
 
   public Node decisionTreeLearner(List<Example> examples, Map<String, String[]> attributes, List<Example> parent_examples){
+      Node tree;
+      String common_output = "";
+
       for(String key : attributes.keySet()){
           lastkey = key;
       }
 
-      /*if(examples.isEmpty()){
-        return plularityValue(parent_examples);
-      }*/
-      //else if(allTheSame(examples)){return examples.get(0).getAttributeValue(lastkey);}
-      //else if(attributes.isEmpty()){return plularityValue(examples);}
-      //else{
-        String a;
-        int argmax = 0;
-        int temp = 0;
 
-      /* for(List attribute : attributes){
-          for(String val : attribute){
-            temp = importance(attribute, examples)
-            if(temp > argmax){
-              a = attribute;
-            }
-          }
-        }*/
-
-        Node tree = new Node(lastkey);
-        System.out.println(tree.isRoot());
-        System.out.println(tree.getValue());
-
+      if(examples.isEmpty()){
+        common_output = plularityValue(parent_examples);
+        tree = new Node(common_output);
         return tree;
-      }
+      }else if(allTheSame(examples)){
+        tree = new Node(examples.get(0).getAttributeValue(lastkey));
+        return tree;
+      }else if(attributes.isEmpty()){
+        common_output = plularityValue(examples);
+        tree = new Node(common_output);
+        return tree;
+      }else{
+        String a = "";
+        double argmax = -1.0;
+        double temp = 0.0;
+        int count = 0;
+        List<Example> exs = new ArrayList<Example>();
+        Node subtree;
+        Node branch;
+
+        for(Map.Entry<String, String[]> attribute : attributes.entrySet()){
+            if(count == attributes.size()-1){
+              break;
+            }else{
+            //  System.out.println("Key" + attribute.getKey());
+              temp = importance(attribute.getKey(), attribute.getValue(), examples);
+            //  System.out.println(attribute.getKey());
+              if(temp > argmax){
+                argmax = temp;
+                a = attribute.getKey();
+              }
+              count++;
+            }
+            for(String value : attribute.getValue()){
+              //  System.out.println("Attribute: " + a + "Value: " + value);
+            }
+
+        }
+
+        //System.out.println("Best A: " + a);
+      //  try{
+          tree = new Node(a);
+        //}catch(Exception e){}
 
 
- public int posCount(List<Example> examples){
+        for(String value: attributes.get(a)){
+          //System.out.println("Inside Attribute: " + a + "Value: " + value);
+           for(Example e : examples){
+             if(e.getAttributeValue(a).equalsIgnoreCase(value)){
+              // System.out.println("Added example for Attribute: " + a + " Value: " + value);
+               exs.add(e);
+             }
+           }
+           if((attributes.size()-1) == 1){
+             attributes.remove(lastkey);
+             attributes.remove(a);
+           }else{
+             attributes.remove(a);
+           }
+
+           //System.out.println("Current attributes list" + attributes.keySet());
+           subtree = decisionTreeLearner(exs, attributes, examples);
+           branch = new Node(value);
+           branch.setParent(tree);
+           subtree.setParent(branch);
+           //System.out.println("Current Tree: " + tree);
+        }
+    }
+    return tree;
+  }
+
+
+ public int attrPosCount(List<Example> examples){
    int pos_count = 0;
-
      for (Example ex: examples){
          if(ex.getAttributeValue(lastkey).equalsIgnoreCase("Yes")){
            pos_count++;
@@ -98,17 +147,45 @@ public class DecisionTree{
     return answer;
   }
 
-/*  public int importance(Attribute attribute, List<Example> examples{
-      int remaining_entropy = 0;
-      int info_gain = 0;
-      int num_examples = examples.size();
+  public double importance(String attribute, String[] values ,List<Example> examples){
+      double entropy = 0.0;
+      double remaining_entropy = 0.0;
+      double info_gain = 0.0;
+      int[] valueOccurences;
+      double posValOccurence = 0,  negValOccurence = 0, totalValOccurence = 0;
+      int totalNumExamples = examples.size();
+      int totalPosAttrCount = 0, totalNegAttrCount = 0;
+      double temp = 0.0;
 
-      for (Example ex: examples){
-          if(ex.getAttritbuteValue(attribute) ){
-            pos_count++;
-          }else{
-            neg_count++;
-          }
+      totalPosAttrCount = attrPosCount(examples);
+      totalNegAttrCount = totalNumExamples - totalPosAttrCount;
+      entropy = (-(((double)totalPosAttrCount/totalNumExamples)*(Math.log((double)totalPosAttrCount/totalNumExamples)/(Math.log(2))))) -
+                (((double)totalNegAttrCount/totalNumExamples)*(Math.log((double)totalNegAttrCount/totalNumExamples)/(Math.log(2))));
+
+      for(String value : values){
+        valueOccurences = valueOccurence(attribute, value, examples);
+        totalValOccurence = valueOccurences[0];
+        posValOccurence = valueOccurences[1];
+        negValOccurence = totalValOccurence - posValOccurence;
+
+        temp = ((double)totalValOccurence/totalNumExamples)*(((-(double)posValOccurence/totalValOccurence)*(Math.log((double)posValOccurence/totalValOccurence)/(Math.log(2)))) -
+               (((double)negValOccurence/totalValOccurence)*(Math.log((double)negValOccurence/totalValOccurence)/(Math.log(2)))));
+        if(!Double.isNaN(temp)){
+          remaining_entropy += temp;
+          System.out.println("Attribute: " + attribute +  " Attribute pos occurence: " + totalValOccurence + " Value: " + value +  " Number pos occurence: " + posValOccurence +  " Number neg occurence: " + negValOccurence);
+          //System.out.println("Part 1: " + (double)totalValOccurence/totalNumExamples);
+          //System.out.println("Part 2: " + ((-(double)posValOccurence/totalValOccurence)*(Math.log((double)posValOccurence/totalValOccurence)/(Math.log(2)))));
+          //System.out.println("Part 3: " + (((double)negValOccurence/totalValOccurence))*(Math.log((double)negValOccurence/totalValOccurence)/(Math.log(2))));
+          //System.out.println("Part 4 re: " + temp);
+          //System.out.println("Part 5 new re: " + remaining_entropy);
+        }
+
       }
-  }*/
+
+      info_gain = entropy - remaining_entropy;
+
+      System.out.println("Info gained from attribute: " + attribute + " is: " + info_gain);
+
+      return info_gain;
+  }
 }
