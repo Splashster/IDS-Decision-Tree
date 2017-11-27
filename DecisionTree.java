@@ -3,16 +3,20 @@ import java.lang.Math.*;
 
 public class DecisionTree{
   String lastkey = "";
+  String pos_value = "";
+  String neg_value = "";
 
-  public DecisionTree(String lkey){
+
+  public DecisionTree(String lkey, String[] class_values){
      lastkey = lkey;
+     pos_value = class_values[0];
+     neg_value = class_values[1];
   }
 
 
   public Node decisionTreeLearner(List<Example> examples, Map<String, String[]> attributes, List<Example> parent_examples){
-      Node tree;
       String common_output = "";
-
+      Node tree;
       if(examples.isEmpty()){
         common_output = plularityValue(parent_examples);
         tree = new Node(common_output);
@@ -55,7 +59,7 @@ public class DecisionTree{
 
         }
 
-        //System.out.println("Best Attribute: " + a);
+        System.out.println("Best Attribute: " + a);
       //  try{
           tree = new Node(a);
       //  }catch(Exception e){}
@@ -65,28 +69,28 @@ public class DecisionTree{
           //  System.out.println("Inside Attribute: " + a + " Value: " + value + " Current example size: " + examples.size());
              for(Example e : examples){
                if(e.getAttributeValue(a).equalsIgnoreCase(value)){
-            //     System.out.println("Added example for Attribute: " + a + " Value: " + value);
+              //  System.out.println("Added example for Attribute: " + a + " Value: " + value);
                  exs.add(e);
                }
              }
             // System.out.println("New example size: " + exs.size());
-             //System.out.println("Attributes size: " + attributes.size());
-            // System.out.println("Attributes left " + attributes.keySet());
+             System.out.println("Attributes size: " + attributes.size());
+             System.out.println("Attributes left " + attributes.keySet());
              if(removal.size() >= 1) {
                for(String atr: removal){
-                 //System.out.println("Removed : " + atr);
+                 System.out.println("Removed : " + atr);
                  attributes.remove(atr);
 
                }
-               //System.out.println("Removed : " + a);
+               System.out.println("Removed : " + a);
                attributes.remove(a);
                removal.clear();
              }else{
                attributes.remove(a);
-               //System.out.println("Removed : " + a);
+               System.out.println("Removed : " + a);
              }
 
-             //System.out.println("Current attributes list" + attributes.keySet());
+             System.out.println("Current attributes list" + attributes.keySet());
              subtree = decisionTreeLearner(exs, attributes, examples);
              branch = new Node(value);
              branch.setBranch();
@@ -106,11 +110,22 @@ public class DecisionTree{
     return tree;
   }
 
+public List<String> predict(List<Example> examples, Node tr){
+  List<String> predictions = new ArrayList<String>();
+  String classification = "";
+  for(Example ex : examples){
+    classification = tr.predictTraversal(ex, tr);
+    predictions.add(classification);
+    tr.resetDone();
+  }
+  return predictions;
+}
+
 
  public int attrPosCount(List<Example> examples){
    int pos_count = 0;
      for (Example ex: examples){
-         if(ex.getAttributeValue(lastkey).equalsIgnoreCase("Yes")){
+         if(ex.getAttributeValue(lastkey).equalsIgnoreCase(pos_value)){
            pos_count++;
          }
      }
@@ -123,7 +138,7 @@ public class DecisionTree{
     for(Example ex : examples){
       if(ex.getAttributeValue(attribute).equalsIgnoreCase(value)){
           valueOccurences[0]++;
-        if(ex.getAttributeValue(lastkey).equalsIgnoreCase("Yes")){
+        if(ex.getAttributeValue(lastkey).equalsIgnoreCase(pos_value)){
           valueOccurences[1]++;
         }
       }
@@ -135,12 +150,12 @@ public class DecisionTree{
   public String plularityValue(List<Example> parent_examples){
     int pos_count = 0;
     int neg_count = 0;
-    String classification = "No";
-    String[] choices = {"Yes", "No"};
+    String classification = neg_value;
+    String[] choices = {pos_value, neg_value};
     Random rand = new Random();
 
     for (Example ex: parent_examples){
-        if(ex.getAttributeValue(lastkey).equalsIgnoreCase("Yes")){
+        if(ex.getAttributeValue(lastkey).equalsIgnoreCase(pos_value)){
           pos_count++;
         }else{
           neg_count++;
@@ -148,7 +163,7 @@ public class DecisionTree{
     }
 
     if(pos_count > neg_count){
-      classification = "Yes";
+      classification = pos_value;
     }else if(pos_count == neg_count){
       classification = choices[rand.nextInt(choices.length)];
     }
@@ -207,7 +222,7 @@ public class DecisionTree{
 
       info_gain = entropy - remaining_entropy;
 
-      //System.out.println("Etropy is: " + entropy + " Info gained from attribute: " + attribute + " is: " + info_gain);
+      System.out.println("Etropy is: " + entropy + " Info gained from attribute: " + attribute + " is: " + info_gain);
 
       return info_gain;
   }

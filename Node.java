@@ -7,6 +7,8 @@ public class Node {
     private Node parent; //patent node
     private List<String> items;
     private boolean isBranch;
+    private boolean done;
+    private String classification;
 
     public Node() { //constructor
         name = "";
@@ -18,6 +20,8 @@ public class Node {
     public Node(String name) { //constructor
         this.name = name;
         isBranch = false;
+        done = false;
+        classification = "";
         child = new ArrayList<>();
         branch = new ArrayList<>();
         items = new ArrayList<String>();
@@ -123,6 +127,9 @@ public class Node {
         return (this.parent == null);
     }
 
+    public void resetDone(){
+      done = false;
+    }
 
     public String toString() {
         String result = name + " ";
@@ -132,7 +139,7 @@ public class Node {
         return result;
     }
 
-    public List<String> traversal(Node n){
+    public List<String> printTraversal(Node n){
       if(n.isABranch()){
         System.out.println("I am branch: " + n.getNodeName() + " My parent is: " + n.getParentName());
         items.add(n.getNodeName());
@@ -147,7 +154,7 @@ public class Node {
             //System.out.println("My name is: " + t.getNodeName() + " and my parent is: " + t.getParentName());
             if(c.hasChildren() && !c.isLeaf()){
               System.out.println("I am:" + c.getNodeName() +  " and I have more children!" );
-              traversal(c);
+              printTraversal(c);
             }
           }
       }else if(n.hasChildren() && n.hasBranches()){
@@ -165,7 +172,7 @@ public class Node {
               //System.out.println("My name is: " + t.getNodeName() + " and my parent is: " + t.getParentName());
               if(c.hasChildren() && !c.isLeaf()){
                 System.out.println("I am:" + c.getNodeName() +  " and I have more children!" );
-                traversal(c);
+                printTraversal(c);
               }
             }
         }
@@ -175,38 +182,64 @@ public class Node {
       return items;
     }
 
-    /*public static void main(String [] args)
-    {
-        Node root = new Node("Patrons");
-        Node child1 = new Node("Full");
-        Node child2 = new Node("Some");
-        child1.setParent(root);
-        child2.setParent(root);
-        Node child3 = new Node("child3");
-        child3.setParent(root);
-        Node child4 = new Node("Hungry");
-        child4.setParent(child3);
-        Node child6 = new Node("child3.2");
-        child6.setParent(child3);
-        Node child5 = new Node("child3.1.1");
-        child5.setParent(child4);
+    public String predictTraversal(Example ex, Node tr){
+      if(!done){
+        for(Node n : tr.getChildren()){
+          //System.out.println("Example " + count + " Attribute " + c.getParentName() +
+          //                  " Value is: " + ex.getAttributeValue(c.getParentName()) + " Node val is: " + c.getNodeName());
+        //  System.out.println("Im: " + tr.getNodeName());
+          if(n.isABranch()){
+          //  System.out.println("Im branch: " + n.getNodeName());
+            if(ex.getAttributeValue(n.getParentName()).equalsIgnoreCase(n.getNodeName())){
+            //  System.out.println("\nMatches on branch: " + n.getNodeName() + " for attribute: " + n.getParentName() + "\n");
+              if(n.hasChildren() && !n.hasBranches()){
+                for(Node c : n.getChildren()){
+                //  System.out.println("Im branch child: " + c.getNodeName());
+                    if(c.hasChildren() && !c.isLeaf()){
+                  //    System.out.println("Im: " + c.getNodeName());
+                      predictTraversal(ex,c);
+                    }else{
+                    //  System.out.println("Im Classification: " + c.getNodeName());
+                      classification = c.getNodeName();
+                      done = true;
+                      break;
+                    }
+                  }
+              }else if(n.hasChildren() && n.hasBranches()){
+              //  System.out.println("My parent is: " + n.getParentName());
+                for(Node b : n.getBranches()){
+                  if(done){break;}
+                  if(ex.getAttributeValue(n.getParentName()).equalsIgnoreCase(n.getNodeName())){
+                  for(Node c : b.getChildren()){
+                    if(c.hasChildren() && !c.isLeaf()){
+                      predictTraversal(ex,c);
+                    }else{
+                      classification = c.getNodeName();
+                      done = true;
+                      break;
+                    }
+                }
+              }
+              //System.out.println("\n Example " + count + " Match Found for value: " + c.getNodeName() + "\n");
+            }
+          }
+
+        }
+      }else if(!n.isABranch() && !n.isLeaf()){
+        //System.out.println("Im a child: " + n.getNodeName());
+        predictTraversal(ex,n);
+      }else{
+      //  System.out.println("\nI'm here\n");
+        classification = n.getNodeName();
+        done = true;
+        break;
+      }
+      }
+      }
+
+      //System.out.println("Final Classification: " + classification);
+      return classification;
+    }
 
 
-        System.out.println(root);
-        System.out.println(root.getChildren());
-        System.out.println(child3.getChildren());
-        System.out.println(child2.getChildren());
-        System.out.println(root.getParent());
-        System.out.println(child4.getParent().getValue());
-        System.out.println(child4.isLeaf());
-        System.out.println(child3.isLeaf());
-        System.out.println(root.isRoot());
-        System.out.println(child3.isRoot());
-        System.out.println(child4.getValue());
-        System.out.println(child3.getValue());
-        System.out.println(child4.getParentName());
-        System.out.println(child3.getParentName());
-        child3.removeChild();
-        System.out.println(root);
-    }*/
 }
