@@ -7,14 +7,14 @@ public class DecisionTree{
   String neg_value = "";
 
 
-  public DecisionTree(String lkey, String[] class_values){
+  public DecisionTree(String lkey, List<String> class_values){
      lastkey = lkey;
-     pos_value = class_values[0];
-     neg_value = class_values[1];
+     pos_value = class_values.get(0);
+     neg_value = class_values.get(1);
   }
 
 
-  public Node decisionTreeLearner(List<Example> examples, Map<String, String[]> attributes, List<Example> parent_examples){
+  public Node decisionTreeLearner(List<Example> examples, Map<String, List<String>> attributes, List<Example> parent_examples){
       String common_output = "";
       Node tree;
       if(examples.isEmpty()){
@@ -29,6 +29,7 @@ public class DecisionTree{
         tree = new Node(common_output);
         return tree;
       }else{
+        System.out.println("I'm here!\n");
         String a = "";
         double argmax = 0.0;
         double temp = 0.0;
@@ -38,7 +39,7 @@ public class DecisionTree{
         Node subtree;
         Node branch;
 
-        for(Map.Entry<String, String[]> attribute : attributes.entrySet()){
+        for(Map.Entry<String, List<String>> attribute : attributes.entrySet()){
             if(count == attributes.size()-1){
               break;
             }else{
@@ -73,24 +74,24 @@ public class DecisionTree{
                  exs.add(e);
                }
              }
-            // System.out.println("New example size: " + exs.size());
-             System.out.println("Attributes size: " + attributes.size());
-             System.out.println("Attributes left " + attributes.keySet());
+             //System.out.println("New example size: " + exs.size());
+             //System.out.println("Attributes size: " + attributes.size());
+             //System.out.println("Attributes left " + attributes.keySet());
              if(removal.size() >= 1) {
                for(String atr: removal){
-                 System.out.println("Removed : " + atr);
+                 //System.out.println("Removed : " + atr);
                  attributes.remove(atr);
 
                }
-               System.out.println("Removed : " + a);
+               //System.out.println("Removed : " + a);
                attributes.remove(a);
                removal.clear();
              }else{
                attributes.remove(a);
-               System.out.println("Removed : " + a);
+              // System.out.println("Removed : " + a);
              }
 
-             System.out.println("Current attributes list" + attributes.keySet());
+             //System.out.println("Current attributes list" + attributes.keySet());
              subtree = decisionTreeLearner(exs, attributes, examples);
              branch = new Node(value);
              branch.setBranch();
@@ -184,7 +185,7 @@ public List<String> predict(List<Example> examples, Node tr){
     return answer;
   }
 
-  public double importance(String attribute, String[] values ,List<Example> examples){
+  public double importance(String attribute, List<String> values ,List<Example> examples){
       double entropy = 0.0;
       double remaining_entropy = 0.0;
       double info_gain = 0.0;

@@ -3,19 +3,19 @@ import java.util.*;
 public class Example{
   Map<String, String> map = new LinkedHashMap<String, String>();
   List<String> attributes = new ArrayList<String>();
-  String[] values;
+  List<String> values;
 
-  public Example(List<String> attrs, String[] vals){
+  public Example(List<String> attrs, List<String> vals){
     attributes = attrs;
     values = vals;
     setAttributeValues(attributes, values);
   }
 
-  public void setAttributeValues(List<String> attrs, String[] vals){
+  public void setAttributeValues(List<String> attrs, List<String> vals){
     int i = 0;
     for(String attribute : attributes){
-        //System.out.println("Attribute: " + attribute + " Value: " + vals[i]);
-        map.put(attribute, vals[i]);
+        //System.out.println("Attribute: " + attribute + " Value: " + vals.get(i));
+        map.put(attribute, vals.get(i));
         i++;
     }
   }
