@@ -54,11 +54,36 @@ public class GetContents{
       attributes.remove(lastkey);
     //  System.out.println(dt.decisionTreeLearner(examples, attributes, null));
       Node tree = dt.decisionTreeLearner(examples, attributes, null);
-    //  System.out.println(tree.isRoot());
+      System.out.println(tree);
     //  System.out.println(tree.getChildren());
 
       //for(String t : tree.toString()){
-        System.out.println(tree);
+        //System.out.println(tree.getChildren().get(1));
+        //System.out.println(tree.getNodeName());
+
+        /*if(!c.isLeaf()){
+          for(Node b : c.getChildren()){
+            names.add
+          }
+        }*/
+
+
+        List<List<String>> names = new ArrayList<List<String>>();
+        for(Node t : tree.getChildren()){
+            //names.add(t.getNodeName());
+          //  System.out.println("Node: " + t.getNodeName() + " Has Parent: " + t.hasParent());
+          //  System.out.println("Node: " + t.getNodeName() + " Has Children: " + t.hasChildren());
+          //  System.out.println("Is Node: " + t.getNodeName() + " Root? " + t.isRoot() );
+          //  System.out.println("My parent is: " + t.getParentName());
+            //for(Node c : t.getChildren())(){
+            //  for(Node c : t.getChildren()){
+            //    names.add(c.getNodeName());
+            //  }
+            //}
+            names.add(t.traversal(t));
+        }
+
+        System.out.println(names);
       //}
     }catch(Exception r){
       System.out.println(r);

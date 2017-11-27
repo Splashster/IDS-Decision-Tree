@@ -55,7 +55,7 @@ public class DecisionTree{
 
         }
 
-        System.out.println("Best Attribute: " + a);
+        //System.out.println("Best Attribute: " + a);
       //  try{
           tree = new Node(a);
       //  }catch(Exception e){}
@@ -89,8 +89,14 @@ public class DecisionTree{
              //System.out.println("Current attributes list" + attributes.keySet());
              subtree = decisionTreeLearner(exs, attributes, examples);
              branch = new Node(value);
-             tree.addChild(branch);
-             branch.addChild(subtree);
+             branch.setBranch();
+             branch.setParent(tree);
+             subtree.setParent(branch);
+             //tree.addChild(branch);
+             //branch.addChild(subtree);
+            // System.out.println("Tree branches are: " + tree.getChildren());
+            // System.out.println("Tree children for branch : " + value + " is: " + branch.getChildren());
+
              exs.clear();
              //System.out.println("Current Tree: " + tree);
           }
