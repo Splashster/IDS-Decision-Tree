@@ -2,7 +2,7 @@
 |   Project:   Computer Security	                                           |
 |   Class:     CSC 5240 - 001                                                  |
 |   Date:      November 29, 2017                                               |
-|   Team:      Darren Cunningham, Moumita Kamal                                 |
+|   Team:      Darren Cunningham, Moumita Kamal                                |
 +------------------------------------------------------------------------------+
 
 Input file requirements

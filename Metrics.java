@@ -40,8 +40,8 @@ public class Metrics {
     }
 
     accuracy = ((true_pos + true_neg) / answers.size()) * 100;
-    precision = (true_pos / (true_pos + false_pos)) * 100;
-    recall = (true_pos / (true_pos + false_neg)) * 100;
+    precision = (true_pos / (true_pos + false_pos));
+    recall = (true_pos / (true_pos + false_neg));
     f1_score = ((2 * recall * precision) / (recall + precision));
 
     System.out.println(dataType + " Results");
@@ -54,9 +54,9 @@ public class Metrics {
     System.out.println("FP: " + false_pos);
     System.out.println("FN: " + false_neg);
     System.out.println("accuracy = " + accuracy + "%");
-    System.out.println("precision = " + precision + "%");
-    System.out.println("recall = " + recall + "%");
-    System.out.println("f1_score = " + f1_score + "%");
+    System.out.println("precision = " + (precision * 100) + "%");
+    System.out.println("recall = " + (recall * 100) + "%");
+    System.out.println("f1_score = " + f1_score);
   }
 
 }
