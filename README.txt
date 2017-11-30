@@ -7,11 +7,14 @@
 
 Input file requirements
 -----------------------------------
-Coma or space separated files only.
-Files must be stored in the Data folder located in the IDS-Decision-Tree folder
-Attribute_description file must contain all of the attribute names in the first column and all of the valid values for each attribute in the second column. 
+The contents in each file must be either separated by comas or spaces.
+
+Each file must be stored in the Data folder located in the IDS-Decision-Tree folder
+
+The attribute_description file must contain all of the attribute names in the first column 
+and all of the valid values for each attribute in the second column. 
 The last row of the attribute description file must contain the classification 
-attribute and the possible classification values.
+attribute name and the possible classification values.
 
 Execution Method
 -----------------------------------
